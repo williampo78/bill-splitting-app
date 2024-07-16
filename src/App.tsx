@@ -1,15 +1,17 @@
-import './App.css';
-import { Button, Typography } from '@mui/material';
+import Router from './router';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import clsx from 'clsx';
 
 function App() {
 	return (
-		<>
-			<Typography variant="h1" color="primary" sx={{mb:3}}>
-				分帳趣
-			</Typography>
-
-			<Button variant='contained' sx={{ bgcolor: 'secondary.main', color: 'white' }}>Click</Button>
-		</>
+		<div className="min-h-screen flex flex-col">
+			<Header />
+			<main className={clsx('bg-sage-100 py-6 px-4', `h-[calc(100vh-124px)]`)}>
+				<Router />
+			</main>
+			<Footer />
+		</div>
 	);
 }
 
