@@ -5,9 +5,9 @@ import clsx from 'clsx';
 
 function App() {
 	return (
-		<div className="min-h-screen flex flex-col">
+		<div className="min-h-screen flex flex-col font-bold">
 			<Header />
-			<main className={clsx('bg-sage-100 py-6 px-4', `h-[calc(100vh-124px)]`)}>
+			<main className={clsx('bg-sage-100 py-6 px-4', `h-[calc(100vh-108px)]`)}>
 				<Router />
 			</main>
 			<Footer />
