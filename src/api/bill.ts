@@ -1,0 +1,10 @@
+import service from './api'
+
+
+export const getBillsAPi = async (data: { code: string }) => {
+    return service({
+        method: 'GET',
+        url: `/bills`,
+        params: data
+    })
+}
