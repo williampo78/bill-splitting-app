@@ -3,6 +3,7 @@ import Home from '@/pages/Index';
 import About from '@/pages/About';
 import Group from '@/pages/Group/Create';
 import Bills from '@/pages/Bills';
+import Users from '@/pages/Users';
 
 function Router() {
 	const routes: RouteObject[] = [
@@ -35,6 +36,10 @@ function Router() {
 		{
 			path: '/group/:code/bills',
 			element: <Bills />,
+		},
+		{
+			path: '/group/:code/users',
+			element: <Users />,
 		},
 	];
 

@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { showGroupApi } from '@/api/group';
+import { useStore } from '@/stores/index';
 
 function Index() {
+	const { setHeaderTitle } = useStore();
+
 	const navigate = useNavigate();
 	const [code, setCode] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
+
+	useEffect(() => {
+		setHeaderTitle('')
+	}, []);
 
 	const searchGroup = async () => {
 		if (code) {
