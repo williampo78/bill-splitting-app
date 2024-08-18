@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getBillsAPi } from '@/api/bill';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { AiTwotoneEdit } from 'react-icons/ai';
 import { useStore } from '@/stores/index';
 interface Bill {
@@ -29,7 +29,7 @@ function Bills() {
 	};
 
 	return (
-		<div className="max-w-[900px] mx-auto">
+		<div className="">
 			<ul className="flex flex-col gap-2">
 				{bills.map((bill, index) => (
 					<li
