@@ -61,7 +61,7 @@ function Index() {
 					}}
 					className="py-2 px-3 rounded-md bg-teal-300 text-white text-lg mt-3"
 				>
-					創建帳本
+					創建群組
 				</button>
 			</div>
 		</>
