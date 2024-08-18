@@ -43,7 +43,11 @@ function Footer() {
 							<AiOutlineUsergroupAdd className="w-8 h-8 " />
 							編輯成員
 						</button>
-						<button className="flex flex-col items-center">
+						<button
+						onClick={() => {
+							navigate(`/group/${code}/bills/create`);
+						}}
+						className="flex flex-col items-center">
 							<AiOutlinePlus className="w-8 h-8" />
 							新增帳本
 						</button>{' '}

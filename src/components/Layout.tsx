@@ -11,7 +11,7 @@ function App() {
 		<div className="min-h-screen flex flex-col font-bold bg-sage-100">
 			<Header />
 			{/* <main className={clsx("bg-sage-100 py-6 px-4", `h-[calc(100vh-108px)]`)}> */}
-			<main className={clsx('py-6 px-4 flex-1 mb-16')}>
+			<main className={clsx('py-6 px-4 flex-1 mb-16 w-full md:max-w-[700px] mx-auto')}>
 				<Outlet />
 			</main>
 			<Footer />
