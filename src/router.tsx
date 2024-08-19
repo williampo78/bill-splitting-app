@@ -1,5 +1,6 @@
 import { Route, RouteObject, useRoutes } from 'react-router-dom';
-import Layout from '@/components/Layout';
+import AuthLayout from '@/Layouts/AuthLayout';
+import NoAuthLayout from '@/Layouts/NoAuthLayout';
 import Home from '@/pages/Index';
 import Group from '@/pages/Group/Create';
 import Bills from '@/pages/Bills/Index';
@@ -11,16 +12,8 @@ import { RoutePath } from './Enums/routePath';
 function Router() {
 	const routes: RouteObject[] = [
 		{
-			element: <Layout />,
+			element: <AuthLayout />,
 			children: [
-				{
-					path: RoutePath.HOME,
-					element: <Home />,
-				},
-				{
-					path: '/group/create',
-					element: <Group />,
-				},
 				{
 					path: '/group/:code/bills',
 					element: <Bills />,
@@ -39,6 +32,19 @@ function Router() {
 				},
 			],
 		},
+		{
+			element: <NoAuthLayout />,
+			children: [
+				{
+					path: RoutePath.HOME,
+					element: <Home />,
+				},
+				{
+					path: '/group/create',
+					element: <Group />,
+				},
+			],
+		},
 	];
 
 	return useRoutes(routes);
@@ -47,7 +53,7 @@ function Router() {
 export default Router;
 // {
 //   path: "/",
-//   element: <Layout />,
+//   element: <AuthLayout />,
 //   children: [
 //     {
 //       path: RoutePath.HOME,

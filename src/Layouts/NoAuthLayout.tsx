@@ -1,6 +1,5 @@
 import { useParams, Outlet } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../components/Header';
 import clsx from 'clsx';
 
 function App() {
@@ -14,7 +13,6 @@ function App() {
 			<main className={clsx('py-6 px-4 flex-1 mb-16 w-full md:max-w-[700px] mx-auto')}>
 				<Outlet />
 			</main>
-			<Footer />
 		</div>
 	);
 }
