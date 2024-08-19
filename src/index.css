@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-input,input:focus {
-    @apply border-none outline-none w-full
+input,
+input:focus {
+	@apply border-none outline-none w-full;
 }
 
 .btn {
-    @apply py-2 px-3 rounded-md  text-white text-lg
+	@apply py-2 px-3 rounded-md  text-white text-lg;
 }
