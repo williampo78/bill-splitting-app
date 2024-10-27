@@ -49,7 +49,7 @@ function Footer() {
 						className="flex flex-col items-center"
 					>
 						<AiOutlinePlus className="w-8 h-8" />
-						新增帳本
+						新增項目
 					</button>{' '}
 				</>
 			</footer>
