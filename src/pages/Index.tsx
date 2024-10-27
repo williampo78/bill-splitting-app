@@ -2,16 +2,17 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showGroupApi } from '@/api/group';
 import { useStore } from '@/stores/index';
+import { useUserStore } from '@/stores/users';
 
 function Index() {
-	const { setHeaderTitle } = useStore();
+	const { setHeaderTitle, setGroupInfo, setUsers } = useStore();
 
 	const navigate = useNavigate();
 	const [code, setCode] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
 	useEffect(() => {
-		setHeaderTitle('')
+		setHeaderTitle('');
 	}, []);
 
 	const searchGroup = async () => {
@@ -19,7 +20,9 @@ function Index() {
 			setErrorMessage('');
 			try {
 				const { data } = await showGroupApi({ code });
-				console.log(data);
+				setGroupInfo(data);
+				setUsers(data.users);
+
 				if (data) {
 					navigate(`/group/${code}/bills`);
 				} else {

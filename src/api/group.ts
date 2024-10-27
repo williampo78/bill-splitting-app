@@ -8,3 +8,11 @@ export const showGroupApi = async (data: { code: string }) => {
         params: { code: data.code }
     })
 }
+
+export const updateGroupUsersApi = async (id: number, data: { _id: string, name: string }[]) => {
+    return service({
+        method: 'PATCH',
+        url: `/group/${id}/users`,
+        data
+    })
+}
