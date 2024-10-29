@@ -12,7 +12,7 @@ interface Bill {
 	updatedAt: string;
 }
 function Bills() {
-	const { setHeaderTitle } = useStore();
+	const { setHeaderTitle, groupInfo } = useStore();
 
 	const { code } = useParams();
 	console.log(code);
@@ -24,7 +24,7 @@ function Bills() {
 	}, []);
 
 	const getBills = async () => {
-		const { data } = await getBillsAPi({ code: code as string });
+		const { data } = await getBillsAPi({ groupId: groupInfo._id });
 		setBills((data.bills as Bill[]) || []);
 		setHeaderTitle(data.groupName || '');
 	};
@@ -39,7 +39,7 @@ function Bills() {
 					>
 						<div>
 							<p className="text-xl">{bill.item}</p>
-              <p className='text-gray-400 text-sm'>{bill.paidBy?.name} </p>
+							<p className="text-gray-400 text-sm">{bill.paidBy?.name} 先付</p>
 						</div>
 						<p className="text-red-600 font-bold">NT${bill.price}</p>
 						{/* <button>
