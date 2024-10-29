@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { showGroupApi } from '@/api/group';
 import { useStore } from '@/stores/index';
-import { useUserStore } from '@/stores/users';
 
 function Index() {
 	const { setHeaderTitle, setGroupInfo, setUsers } = useStore();

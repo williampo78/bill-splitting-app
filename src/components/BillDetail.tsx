@@ -1,32 +1,42 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import Select from 'react-dropdown-select';
+import Select from 'react-select';
+import { useStore } from '@/stores/index';
 
 function BillDetail() {
+	const { users, groupInfo } = useStore();
+
 	const { pathname } = useLocation();
 	const createPage = useRef(pathname.includes('create'));
 	const [item, setItem] = useState('');
 	const [price, setPrice] = useState('');
 	const [date, setDate] = useState(new Date());
-	const options = [
-		{ id: 1, name: 'John' },
-		{ id: 2, name: 'Max' },
-		{ id: 3, name: 'Jason' },
-	];
 
-	const [selectedUser, setSelectedUser] = useState<{ id: number; name: string }[]>([]);
+	const [paidBy, setPaidBy] = useState<any>(null);
+	const [sharedBy, setSharedBy] = useState<{ _id: string; name: string }[]>([]);
+
+	console.log('paidBy', paidBy);
+	const submitData = useMemo(() => {
+		return {
+			groupId: groupInfo._id,
+			item: item,
+			price: price,
+			// paidBy: paidBy[0]?._id || '',
+		};
+	}, [item, price, paidBy]);
 
 	const save = () => {
-		console.log(date);
+		console.log(submitData);
 	};
 
 	return (
 		<div className="flex flex-col gap-3">
 			<div>
-				<label htmlFor="">品項</label>
+				<label htmlFor="item">品項</label>
 				<div className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center">
 					<input
+						id="item"
 						className="flex-1"
 						type="text"
 						value={item}
@@ -37,9 +47,10 @@ function BillDetail() {
 				</div>
 			</div>
 			<div>
-				<label htmlFor="">金額</label>
+				<label htmlFor="price">金額</label>
 				<div className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center">
 					<input
+						id="price"
 						className="flex-1"
 						type="number"
 						min={0}
@@ -54,17 +65,23 @@ function BillDetail() {
 				<label htmlFor="">誰出錢</label>
 				<Select
 					className="w-full bg-white !border-2 !border-gray-400 !rounded-md h-12 !px-2"
-					options={options}
-					labelField="name"
-					valueField="id"
-					onChange={(values) => setSelectedUser(values)}
-					values={selectedUser}
-					searchBy='name'
+					defaultValue={paidBy}
+					onChange={setPaidBy}
+					options={users}
 				/>
+				{/* <Select
+					className="w-full bg-white !border-2 !border-gray-400 !rounded-md h-12 !px-2"
+					options={users}
+					labelField="name"
+					valueField="_id"
+					onChange={setPaidBy}
+					values={paidBy}
+					searchBy="name"
+				/> */}
 			</div>
 			<div>
-				<label htmlFor="">分給誰</label>
-				<div className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center">
+				<label htmlFor="sharedBy">分給誰</label>
+				{/* <div className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center">
 					<input
 						className="flex-1"
 						type="text"
@@ -73,7 +90,17 @@ function BillDetail() {
 							setItem(e.target.value);
 						}}
 					/>
-				</div>
+				</div> */}
+				<Select
+					className="w-full bg-white !border-2 !border-gray-400 !rounded-md h-12 !px-2"
+					options={users}
+					labelField="name"
+					valueField="_id"
+					onChange={(values) => setSharedBy(values)}
+					values={paidBy}
+					searchBy="name"
+					multi
+				/>
 			</div>
 			<div>
 				<label htmlFor="">日期</label>
