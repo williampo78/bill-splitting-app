@@ -1,5 +1,5 @@
 import service from './api'
-import type { BillPayload } from '@/type/bill'
+import type { BillPayload } from '@/type/bill.ts'
 
 
 export const getBillsAPi = async (data: { groupId: string }) => {
@@ -7,6 +7,13 @@ export const getBillsAPi = async (data: { groupId: string }) => {
         method: 'GET',
         url: `/bills`,
         params: data
+    })
+}
+
+export const showBillAPi = async (billId: string) => {
+    return service({
+        method: 'GET',
+        url: `/bills/${billId}`,
     })
 }
 
