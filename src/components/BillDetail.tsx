@@ -1,14 +1,16 @@
-import { useState, useRef, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useRef, useMemo, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { useStore } from "@/stores/index";
-import { createBillApi } from "@/api/bill";
+import { createBillApi, showBillAPi } from "@/api/bill";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 
 function BillDetail() {
+  const params = useParams();
+  const { pathname } = useLocation();
+
   const { users, groupInfo } = useStore();
 
-  const { pathname } = useLocation();
   const createPage = useRef(pathname.includes("create"));
   const [item, setItem] = useState("");
   const [price, setPrice] = useState("");
@@ -35,12 +37,16 @@ function BillDetail() {
     },
   ]);
 
+  useEffect(() => {
+    getBillInfo();
+  });
+
   const submitData = useMemo(() => {
     return {
       groupId: groupInfo._id,
       item: item,
       price: price,
-      paidBy: paidBy,
+      paidBy: paidBy?._id,
       sharedBy: sharedBy.map((item) => {
         return { userId: item.user._id, amount: item.amount };
       }),
@@ -53,7 +59,20 @@ function BillDetail() {
   };
 
   const save = async () => {
+    console.log(submitData);
+    return;
+
     await createBillApi(submitData);
+  };
+
+  const getBillInfo = async () => {
+    const { data } = await showBillAPi(params.id!);
+	
+    const paidByUser = users.find((user) => user._id === data.paidBy);
+    setPaidBy(paidByUser);
+
+    setItem(data.item);
+    setPrice(data.price);
   };
 
   return (
@@ -91,7 +110,7 @@ function BillDetail() {
         <label htmlFor="">誰出錢</label>
         <Select
           className="w-full bg-white !border-2 !border-gray-400 !rounded-md  "
-          defaultValue={paidBy}
+          value={paidBy}
           onChange={setPaidBy}
           options={users}
           getOptionLabel={(option) => option.name}
