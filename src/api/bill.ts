@@ -1,5 +1,6 @@
 import service from './api'
-import type { BillPayload } from '@/type/bill.ts'
+import type { BillPayload, BillData } from '@/type/bill.ts'
+import { AxiosResponse } from 'axios'
 
 
 export const getBillsAPi = async (data: { groupId: string }) => {
@@ -10,7 +11,7 @@ export const getBillsAPi = async (data: { groupId: string }) => {
     })
 }
 
-export const showBillAPi = async (billId: string) => {
+export const showBillAPi = async (billId: string): Promise<AxiosResponse<BillData>> => {
     return service({
         method: 'GET',
         url: `/bills/${billId}`,
