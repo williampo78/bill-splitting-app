@@ -10,3 +10,19 @@ export interface BillPayload {
         amount: number | string
     }[]
 }
+
+
+export interface BillData {
+    _id: string;
+    groupId: string;
+    item: string;
+    price: number;
+    paidBy: string;
+    sharedBy:
+    {
+        _id: string;
+        userId: string,
+        amount: number | string
+    }[]
+    payingTime:  Date;
+}
