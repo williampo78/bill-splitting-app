@@ -25,3 +25,10 @@ export const createBillApi = async (data: BillPayload) => {
         data
     })
 }
+export const updateBillApi = async (id: string, data: BillPayload) => {
+    return service({
+        method: 'PATCH',
+        url: `/bills/${id}`,
+        data
+    })
+}

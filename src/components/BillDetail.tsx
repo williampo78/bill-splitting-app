@@ -1,7 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useStore } from '@/stores/index';
-import { createBillApi, showBillAPi } from '@/api/bill';
+import { createBillApi, showBillAPi, updateBillApi } from '@/api/bill';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 
@@ -36,7 +36,9 @@ function BillDetail() {
 	]);
 
 	useEffect(() => {
-		getBillInfo();
+		if (params.id) {
+			getBillInfo();
+		}
 	}, []);
 
 	const submitData = useMemo(() => {
@@ -57,10 +59,15 @@ function BillDetail() {
 	};
 
 	const save = async () => {
-		console.log(submitData);
-		return;
-
-		await createBillApi(submitData);
+		try {
+			if (params.id) {
+				await updateBillApi(params.id, submitData);
+			} else {
+				await createBillApi(submitData);
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	const getBillInfo = async () => {
