@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { updateGroupUsersApi } from '@/api/group';
+import { updateGroupUsersApi, getGroupUsersApi } from '@/api/group';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useStore } from '@/stores/index';
 
 function Users() {
 	const { setHeaderTitle, users, setUsers, groupInfo } = useStore();
 
-	const params = useParams();
-
-	const [copiedUsers, setCopiedUsers] = useState(users);
+	const [copiedUsers, setCopiedUsers] = useState(users?.length ? users : [{ name: '' }]);
 
 	useEffect(() => {
 		setHeaderTitle('編輯成員' || '');
 	}, []);
 
 	const updateUsers = async () => {
-		await updateGroupUsersApi(groupInfo._id, { users: copiedUsers });
-		setUsers(copiedUsers)
+		try {
+			await updateGroupUsersApi(groupInfo._id, { users: copiedUsers });
+			const { data } = await getGroupUsersApi(groupInfo._id);
+			setUsers(data);
+		} catch (error) {
+			console.error(error);
+		}
 	};
 
 	return (

@@ -185,7 +185,7 @@ function BillDetail() {
 					}}
 					className="btn bg-sage-300"
 				>
-					{createPage.current ? '新增' : '儲存'}
+					儲存
 				</button>
 			</div>
 		</div>

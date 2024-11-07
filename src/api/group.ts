@@ -9,10 +9,25 @@ export const showGroupApi = async (data: { code: string }) => {
     })
 }
 
-export const updateGroupUsersApi = async (id: number, data: { _id: string, name: string }[]) => {
+export const createGroupApi = async (data: { name: string }) => {
+    return service({
+        method: 'POST',
+        url: `/group`,
+        data
+    })
+}
+
+export const updateGroupUsersApi = async (id: number, data: { users: { _id?: string, name: string }[] }) => {
     return service({
         method: 'PATCH',
         url: `/group/${id}/users`,
         data
+    })
+}
+
+export const getGroupUsersApi = async (groupId: string) => {
+    return service({
+        method: 'GET',
+        url: `/group/${groupId}/users`,
     })
 }
