@@ -14,14 +14,14 @@ function GroupCreate() {
 			const { data } = await createGroupApi({ name: name });
 			setGroupInfo(data);
 			setUsers(data.users);
-			navigate(`/group/${data.code}/bills`);
+			navigate(`/group/${data.code}/users`);
 		} catch (error) {}
 	};
 
 	return (
 		<>
 			<div className="h-full flex flex-col justify-center items-center md:w-auto max-w-[620px] mx-auto">
-				<h1 className="text-2xl text-center mb-2">創建帳本</h1>
+				<h1 className="text-2xl text-center mb-2">創建群組</h1>
 				<div className="h-12 w-full bg-gray-100 rounded-md border-2 border-zinc-400">
 					<input
 						onChange={(e) => {
@@ -29,7 +29,7 @@ function GroupCreate() {
 						}}
 						type="text"
 						className="h-full w-full bg-transparent p-2"
-						placeholder="請輸入帳本名稱"
+						placeholder="請輸入群組名稱"
 					/>
 				</div>
 				<div className="flex gap-2 mt-2">

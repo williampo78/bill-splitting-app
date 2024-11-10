@@ -4,6 +4,7 @@ import {
 	AiOutlineUnorderedList,
 	AiOutlineHome,
 } from 'react-icons/ai';
+import { BiLogOut } from "react-icons/bi";
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 function Footer() {
@@ -21,7 +22,7 @@ function Footer() {
 						}}
 						className="flex flex-col items-center"
 					>
-						<AiOutlineHome className="w-8 h-8 " />
+						<BiLogOut className="w-8 h-8 " />
 						返回首頁
 					</button>
 					<button
