@@ -18,7 +18,6 @@ function Bills() {
   const { setHeaderTitle, groupInfo } = useStore();
 
   const { code } = useParams();
-  console.log(code);
 
   const [bills, setBills] = useState<Bill[]>([]);
 

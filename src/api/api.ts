@@ -25,7 +25,6 @@ export default function (axiosConfig: AxiosRequestConfig): Promise<AxiosResponse
     // Add a response interceptor
     service.interceptors.response.use(
         (response: AxiosResponse) => {
-            console.log(response);
 
             // Any status code that lies within the range of 2xx causes this function to trigger
             // Do something with response data
