@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react';
 import { updateGroupUsersApi, getGroupUsersApi } from '@/api/group';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt, FaPen, FaCheck } from 'react-icons/fa';
 import { useStore } from '@/stores/index';
 import { toast } from 'react-toastify';
+import clsx from 'clsx';
 
 function Users() {
 	const { setHeaderTitle, users, setUsers, groupInfo } = useStore();
 
-	const [copiedUsers, setCopiedUsers] = useState(users?.length ? users : [{ name: '' }]);
+	const [copiedUsers, setCopiedUsers] = useState(users?.length ? [...users] : [{ name: '' }]);
+	const [chosenUserId, setChosenUserId] = useState('');
 
 	useEffect(() => {
 		setHeaderTitle('編輯成員' || '');
 	}, []);
+
+	const changeUserName = async (user: { _id?: string; name: string }) => {
+		console.log('copiedUsers',copiedUsers);
+	};
 
 	const updateUsers = async () => {
 		const everyUserHasName = copiedUsers.every((user) => user.name);
@@ -35,29 +41,57 @@ function Users() {
 				{copiedUsers.map((user, index) => (
 					<li
 						key={index}
-						className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center"
+						className={clsx(
+							'p-3 border-2 border-gray-400 bg-white rounded-md overflow-hidden flex justify-between items-center text-xl'
+						)}
 					>
-						<input
-							className="flex-1"
-							type="text"
-							value={user.name}
-							onChange={(e) => {
-								const _users = [...copiedUsers];
-								_users[index].name = e.target.value;
-								setCopiedUsers(_users);
-							}}
-						/>
-						{copiedUsers.length > 1 && (
+						{chosenUserId === user._id ? (
+							<input
+								className="flex-1 bg-transparent text-teal-700"
+								type="text"
+								value={user.name}
+								onChange={(e) => {
+									const _users = [...copiedUsers];
+									_users[index].name = e.target.value;
+									setCopiedUsers(_users);
+									console.log(users);
+								}}
+								autoFocus
+							/>
+						) : (
+							<span className="flex-1">{user.name}</span>
+						)}
+						{chosenUserId === user._id ? (
+							<button
+								onClick={() => {
+									changeUserName(user);
+								}}
+								className="text-emerald-500 text-2xl mr-3"
+							>
+								<FaCheck />
+							</button>
+						) : (
+							<button
+								onClick={() => {
+									setChosenUserId(user._id!);
+									setCopiedUsers([...users])
+								}}
+								className="text-teal-400 text-2xl mr-3"
+							>
+								<FaPen />
+							</button>
+						)}
+						{
 							<button
 								onClick={() => {
 									const _users = [...copiedUsers];
 									setCopiedUsers(_users.filter((_, i) => i !== index));
 								}}
-								className="btn bg-red-600 "
+								className="text-red-600 text-2xl"
 							>
 								<FaRegTrashAlt />
 							</button>
-						)}
+						}
 					</li>
 				))}
 			</ul>
