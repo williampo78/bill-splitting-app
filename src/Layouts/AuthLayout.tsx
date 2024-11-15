@@ -5,7 +5,6 @@ import clsx from 'clsx';
 
 function App() {
 	const params = useParams();
-	console.log('app params', params);
 
 	return (
 		<div className="min-h-screen flex flex-col font-bold bg-sage-100">

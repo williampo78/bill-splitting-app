@@ -6,6 +6,7 @@ export default function (axiosConfig: AxiosRequestConfig): Promise<AxiosResponse
             'Content-Type': 'application/json',
         },
         baseURL: import.meta.env.VITE_APP_BASE_URL,
+        // baseURL: "http://localhost:3001/api",
         timeout: 10000,
     });
 
@@ -25,7 +26,6 @@ export default function (axiosConfig: AxiosRequestConfig): Promise<AxiosResponse
     // Add a response interceptor
     service.interceptors.response.use(
         (response: AxiosResponse) => {
-            console.log(response);
 
             // Any status code that lies within the range of 2xx causes this function to trigger
             // Do something with response data

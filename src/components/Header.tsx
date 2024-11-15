@@ -3,7 +3,8 @@ import { useStore } from "@/stores/index";
 import { FaChevronLeft } from "react-icons/fa6";
 
 function Header() {
-  const headerTitle = useStore((state) => state.headerTitle);
+  // const headerTitle = useStore((state) => state.headerTitle);
+  const { headerTitle, groupInfo } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,7 +21,9 @@ function Header() {
             <FaChevronLeft />
           </button>
         )}
-        <Link to="/">{headerTitle || "分帳趣"}</Link>
+        <Link to={`/group/${groupInfo.code}/bills`}>
+          {headerTitle || "分帳趣"}
+        </Link>
       </header>
     </>
   );

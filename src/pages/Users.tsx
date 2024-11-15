@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { updateGroupUsersApi, getGroupUsersApi } from '@/api/group';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useStore } from '@/stores/index';
+import { toast } from 'react-toastify';
 
 function Users() {
 	const { setHeaderTitle, users, setUsers, groupInfo } = useStore();
@@ -14,10 +14,16 @@ function Users() {
 	}, []);
 
 	const updateUsers = async () => {
+		const everyUserHasName = copiedUsers.every((user) => user.name);
+		if (!everyUserHasName) {
+			toast.error('請填寫所有成員名稱');
+			return;
+		}
 		try {
 			await updateGroupUsersApi(groupInfo._id, { users: copiedUsers });
 			const { data } = await getGroupUsersApi(groupInfo._id);
 			setUsers(data);
+			toast.success('群組成員已更新');
 		} catch (error) {
 			console.error(error);
 		}
@@ -41,7 +47,7 @@ function Users() {
 								setCopiedUsers(_users);
 							}}
 						/>
-						{users.length > 1 && (
+						{copiedUsers.length > 1 && (
 							<button
 								onClick={() => {
 									const _users = [...copiedUsers];
