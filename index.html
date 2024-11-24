@@ -1,12 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/bill-splitting-app/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>分帳趣</title>
-    <script type="module" crossorigin src="/bill-splitting-app/assets/index-tsD6QnhY.js"></script>
-    <link rel="stylesheet" crossorigin href="/bill-splitting-app/assets/index-rA_LFvW4.css">
+    <script type="module" crossorigin src="/bill-splitting-app/assets/index-BCa49ZY5.js"></script>
+    <link rel="stylesheet" crossorigin href="/bill-splitting-app/assets/index-CsH3vCZe.css">
   </head>
   <body>
     <div id="root"></div>
@@ -23,16 +23,22 @@
       // the correct url will be waiting in the browser's history for
       // the single page app to route accordingly.
 
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
           );
         }
-      }(window.location))
+      })(window.location);
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
   </body>
