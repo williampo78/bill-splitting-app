@@ -23,8 +23,8 @@ jobs:
 
       - name: Build project
         env:
-          VITE_APP_BASE_URL: ${{ secrets.VITE_APP_BASE_URL }}
-        run: yarn run build
+          VITE_APP_BASE_URL: ${{ secrets.VITE_APP_BASE_URL }}  # This ensures the secret is passed to the build process
+        run: yarn build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
