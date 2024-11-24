@@ -1,14 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
-import { ThemeProvider } from '@mui/material/styles';
-import { globalTheme } from './globalTheme';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-	<React.StrictMode>
-		<ThemeProvider theme={globalTheme}>
-			<App />
-		</ThemeProvider>
-	</React.StrictMode>
+import "react-toastify/dist/ReactToastify.css";
+
+import App from "./App.tsx";
+import "react-datepicker/dist/react-datepicker.css";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <BrowserRouter basename="/bill-splitting-app">
+      <App />
+      <ToastContainer position="top-right" autoClose={1500} />
+    </BrowserRouter>
+  </React.StrictMode>
 );
