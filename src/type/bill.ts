@@ -12,6 +12,7 @@ export interface BillPayload {
 }
 
 
+//API回傳
 export interface BillData {
     _id: string;
     groupId: string;
@@ -24,5 +25,17 @@ export interface BillData {
         userId: string,
         amount: number | string
     }[]
-    payingTime:  Date;
+    payingTime: Date;
+}
+
+
+export interface Bill {
+    _id: string;
+    item: string;
+    paidBy: { _id: string; name: string };
+    sharedBy: { _id: string; userId: string; name: string; amount: number }[];
+    groupId: string;
+    price: number;
+    createdAt: string;
+    updatedAt: string;
 }

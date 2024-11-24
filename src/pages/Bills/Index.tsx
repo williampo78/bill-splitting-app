@@ -1,28 +1,19 @@
 import { useEffect, useState } from 'react';
 import { getBillsAPi } from '@/api/bill';
 import { useParams, useNavigate } from 'react-router-dom';
+import type { Expense, SplitBillsResult } from '@/type/transaction';
+import type { Bill } from '@/type/bill';
 
 // import { AiTwotoneEdit } from "react-icons/ai";
 import { useStore } from '@/stores/index';
-interface Bill {
-	_id: string;
-	item: string;
-	paidBy: { _id: string; name: string };
-	sharedBy: { _id: string; userId: string; name: string; amount: number }[];
-	groupId: string;
-	price: number;
-	createdAt: string;
-	updatedAt: string;
-}
+import { useBillStore } from '@/stores/bill';
 
 function Bills() {
 	const navigate = useNavigate();
 	const { setHeaderTitle, groupInfo } = useStore();
+	const { bills, setBills } = useBillStore();
 
 	const { code } = useParams();
-
-	const [bills, setBills] = useState<Bill[]>([]);
-	const [aaa, setaaa] = useState<any>();
 
 	useEffect(() => {
 		getBills();
@@ -35,10 +26,10 @@ function Bills() {
 		console.log(bills);
 	};
 
-	function splitBills(expenses) {
-		let totalExpenses = {};
-		let people = new Set();
-		let totalContributions = {}; // Track total contributions for each contributor
+	function splitBills(expenses: Expense[]): SplitBillsResult {
+		let totalExpenses: Record<string, number> = {};
+		let people = new Set<string>();
+		let totalContributions: Record<string, number> = {}; // Track total contributions for each contributor
 
 		// Calculate total contributions and track participants
 		for (let expense of expenses) {
@@ -56,7 +47,7 @@ function Bills() {
 		}
 
 		// Initialize fair shares for all participants
-		let fairShares = {};
+		let fairShares: Record<string, number> = {};
 		people.forEach((person) => (fairShares[person] = 0));
 
 		// Distribute shares based on customShares
@@ -71,7 +62,7 @@ function Bills() {
 		}
 
 		// Calculate each person's balance
-		let balances = {};
+		let balances: Record<string, number> = {};
 		people.forEach((person) => {
 			balances[person] = (totalExpenses[person] || 0) - (fairShares[person] || 0);
 		});
@@ -99,6 +90,7 @@ function Bills() {
 
 		return { transactions, totalContributions };
 	}
+
 	const expenses = bills.map((bill) => {
 		return {
 			title: bill.item,
@@ -112,29 +104,27 @@ function Bills() {
 		};
 	});
 
-	const getResult = (expenses) => {
-		console.log(expenses);
-		setaaa(expenses);
+	const getResult = (expenses: Expense[]) => {
+		// const { transactions, totalContributions } = splitBills(expenses);
 
-		const { transactions, totalContributions } = splitBills(expenses);
+		navigate(`/group/${code}/transactions`);
 
-		console.log(transactions);
 
-		if (transactions.length > 0) {
-			console.log('\nTransactions:');
-			transactions.forEach((transaction) => {
-				console.log(`${transaction.payer} pays ${transaction.amount} to ${transaction.receiver}`);
-			});
+		// if (transactions.length > 0) {
+		// 	// console.log('\nTransactions:');
+		// 	transactions.forEach((transaction) => {
+		// 		console.log(`${transaction.payer} pays ${transaction.amount} to ${transaction.receiver}`);
+		// 	});
 
-			console.log('\nTotal Contributions:');
-			for (let contributor in totalContributions) {
-				console.log(
-					`${contributor} contributed a total of ${totalContributions[contributor].toFixed(2)}`
-				);
-			}
-		} else {
-			console.log('No transactions needed.');
-		}
+		// 	console.log('\nTotal Contributions:');
+		// 	for (let contributor in totalContributions) {
+		// 		console.log(
+		// 			`${contributor} contributed a total of ${totalContributions[contributor].toFixed(2)}`
+		// 		);
+		// 	}
+		// } else {
+		// 	console.log('No transactions needed.');
+		// }
 	};
 
 	return (
@@ -173,14 +163,16 @@ function Bills() {
 					</button>
 				</div>
 			)}
-			<button
-				onClick={() => {
-					getResult(expenses);
-				}}
-				className="mt-6 py-2 px-3 bg-teal-800 text-white rounded-md"
-			>
-				計算
-			</button>
+			<div className="flex justify-center mt-6">
+				<button
+					onClick={() => {
+						getResult(expenses);
+					}}
+					className="btn bg-teal-300 text-white rounded-md text-lg"
+				>
+					結算
+				</button>
+			</div>
 		</div>
 	);
 }

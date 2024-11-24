@@ -7,6 +7,7 @@ import Bills from '@/pages/Bills/Index';
 import Users from '@/pages/Users';
 import BillCreate from '@/pages/Bills/Create';
 import BillUpdate from '@/pages/Bills/Update';
+import Transaction from '@/pages/Transaction';
 import { RoutePath } from './Enums/routePath';
 
 function Router() {
@@ -29,6 +30,10 @@ function Router() {
 				{
 					path: '/group/:code/users',
 					element: <Users />,
+				},
+				{
+					path: '/group/:code/transactions',
+					element: <Transaction />,
 				},
 			],
 		},

@@ -18,5 +18,4 @@ export const useUserStore = create(
             getUsers: (users: User[]) => set({ users: users })
 
         }), { name: 'users' }
-        )
-)
+        ))
