@@ -22,13 +22,31 @@ function Transaction() {
 			};
 		});
 		setExpense(_expenses);
+		calculateEachCost();
 	}, [bills]);
 
 	useEffect(() => {
 		splitBills();
 	}, [expenses]);
 
+	const calculateEachCost = () => {
+		console.log('calculate bill', bills);
+		const result: { userId: string; userName: string; cost: number }[] = [];
+		bills.forEach((bill) => {
+			const currentPerson = result.find((r) => r.userId === bill.paidBy._id);
+			if (currentPerson) {
+				currentPerson.cost += bill.price;
+			} else {
+				result.push({ userId: bill.paidBy._id, userName: bill.paidBy.name, cost: bill.price });
+			}
+		});
+		console.log('result', result);
+	};
+
+	//計算分帳結果
 	const splitBills = (): void => {
+		console.log(expenses);
+
 		let totalExpenses: Record<string, number> = {};
 		let people = new Set<string>();
 		let totalContributions: Record<string, number> = {}; // Track total contributions for each contributor
@@ -99,10 +117,12 @@ function Transaction() {
 					key={index}
 					className="px-3 py-2 border-2 border-gray-400 bg-white rounded-md overflow-hidden items-center text-xl"
 				>
-					<p className=''>{transaction.payer} <span className='text-base'>付</span></p>
+					<p className="">
+						{transaction.payer} <span className="text-base">付</span>
+					</p>
 					<div className="flex items-center gap-2">
-						<TbArrowBigDownLinesFilled className='text-sage-300 text-2xl my-2'/>
-						<span className='text-lg text-red-600'>NT. {transaction.amount}</span>
+						<TbArrowBigDownLinesFilled className="text-sage-300 text-2xl my-2" />
+						<span className="text-lg text-red-600">NT. {transaction.amount}</span>
 					</div>
 					<p>{transaction.receiver}</p>
 				</li>
