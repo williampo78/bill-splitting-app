@@ -4,7 +4,7 @@ import { showGroupApi } from '@/api/group';
 import { useStore } from '@/stores/index';
 
 function Index() {
-	const { setHeaderTitle, setGroupInfo, setUsers } = useStore();
+	const { setHeaderTitle, setGroupInfo, setUsers, getGroupInfo } = useStore();
 
 	const navigate = useNavigate();
 	const [code, setCode] = useState('');
@@ -18,18 +18,18 @@ function Index() {
 		if (code) {
 			setErrorMessage('');
 			try {
-				const { data } = await showGroupApi({ code });
-				setGroupInfo(data);
-				setUsers(data.users);
-
-				if (data) {
-					navigate(`/group/${code}/bills`);
-				} else {
-					setErrorMessage('查無群組');
-				}
-			} catch (err) {
-				console.log(err);
+				await getGroupInfo(code);
+				navigate(`/group/${code}/bills`);
+			} catch (error: any) {
+				setErrorMessage(error.message);
 			}
+			// try {
+			// 	const { data } = await showGroupApi({ code });
+			// 	setGroupInfo(data);
+			// 	setUsers(data.users);
+			// 	const message = error.response?.data?.error || '';
+			// 	setErrorMessage(message);
+			// }
 		}
 	};
 	return (

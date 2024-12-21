@@ -32,7 +32,7 @@ export interface BillData {
 export interface Bill {
     _id: string;
     item: string;
-    paidBy: { _id: string; name: string };
+    paidBy: { id: string; name: string };
     sharedBy: { _id: string; userId: string; name: string; amount: number }[];
     groupId: string;
     price: number;
