@@ -4,6 +4,8 @@ import { useStore } from "@/stores/index";
 import { createBillApi, showBillAPi, updateBillApi } from "@/api/bill";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
+import { FaRegTrashAlt } from "react-icons/fa";
+
 import { toast } from "react-toastify";
 
 function BillDetail() {
@@ -15,7 +17,7 @@ function BillDetail() {
   const [price, setPrice] = useState<number | string>("");
   const [date, setDate] = useState<Date>(new Date());
 
-  const [paidBy, setPaidBy] = useState<{ _id: string; name: string } | null>(
+  const [paidBy, setPaidBy] = useState<{ _id?: string; name: string } | null>(
     null
   );
   const [sharedBy, setSharedBy] = useState<
@@ -25,6 +27,7 @@ function BillDetail() {
         name: string;
       };
       amount: number | string;
+      isDefault: boolean;
     }[]
   >([
     {
@@ -33,8 +36,11 @@ function BillDetail() {
         name: "",
       },
       amount: 0,
+      isDefault: true,
     },
   ]);
+
+  const [sharedByLength, setSharedByLength] = useState(sharedBy.length);
 
   useEffect(() => {
     if (params.id) {
@@ -45,6 +51,14 @@ function BillDetail() {
     }
   }, []);
 
+  useEffect(() => {
+    setSharedByLength(sharedBy.length);
+  }, [sharedBy]);
+
+  useEffect(() => {
+    calculateSharedAmount();
+  }, [sharedByLength]);
+
   const submitData = useMemo(() => {
     return {
       groupId: groupInfo._id,
@@ -52,17 +66,37 @@ function BillDetail() {
       price: price,
       paidBy: paidBy?._id || "",
       sharedBy: sharedBy.map((item) => {
-        return { userId: item.user._id, amount: item.amount };
+        return { userId: item.user._id!, amount: item.amount };
       }),
       payingTime: date,
     };
   }, [groupInfo, item, price, paidBy, sharedBy, date]);
 
+  const totalSharedAmount = useMemo(() => {
+    return sharedBy.reduce((accum, current) => {
+      return accum + +current.amount;
+    }, 0);
+  }, [sharedBy]);
+
   const addSharedBy = () => {
-    setSharedBy([...sharedBy, { user: { _id: "", name: "" }, amount: 0 }]);
+    setSharedBy([
+      ...sharedBy,
+      { user: { _id: "", name: "" }, amount: 0, isDefault: true },
+    ]);
+    // calculateSharedAmount();
   };
 
   const save = async () => {
+    console.log(totalSharedAmount);
+    const amountDifference = +price - totalSharedAmount;
+    if (amountDifference >= 1) {
+      toast.error(`還須補足${amountDifference}元`);
+      return;
+    }
+    if (amountDifference <= -1) {
+      toast.error(`多分了${amountDifference * -1}元`);
+      return;
+    }
     try {
       if (params.id) {
         await updateBillApi(params.id, submitData);
@@ -80,7 +114,7 @@ function BillDetail() {
     setItem("");
     setPrice("");
     setPaidBy({ _id: "", name: "" });
-    setSharedBy([{ user: { _id: "", name: "" }, amount: 0 }]);
+    setSharedBy([{ user: { _id: "", name: "" }, amount: 0, isDefault: true }]);
     setDate(new Date());
   };
 
@@ -102,6 +136,29 @@ function BillDetail() {
     setPrice(data.price);
     setSharedBy(sharedByUsers);
     setDate(data.payingTime);
+  };
+
+  //自動計算要分的錢
+  const calculateSharedAmount = () => {
+    const _sharedBy = [...sharedBy];
+    let manualUpdatedLength = 0;
+    const totalManualAmount = sharedBy.reduce((accum, current) => {
+      if (!current.isDefault) {
+        manualUpdatedLength++;
+        return +current.amount + accum;
+      }
+      return accum;
+    }, 0);
+
+    _sharedBy.forEach((s) => {
+      if (s.isDefault) {
+        s.amount = (
+          (+price - totalManualAmount) /
+          (sharedBy.length - manualUpdatedLength)
+        ).toFixed(2);
+      }
+    });
+    setSharedBy(_sharedBy);
   };
 
   return (
@@ -131,6 +188,11 @@ function BillDetail() {
             value={price}
             onChange={(e) => {
               setPrice(e.target.value);
+              const _sharedBy = [...sharedBy];
+              if (_sharedBy.length === 1) {
+                _sharedBy[0].amount = e.target.value;
+                setSharedBy(_sharedBy);
+              }
             }}
           />
         </div>
@@ -173,21 +235,39 @@ function BillDetail() {
                 id="price"
                 className="flex-1"
                 type="number"
-                value={user.amount || (+price / +sharedBy.length).toFixed(1)}
+                value={user.amount}
                 onChange={(e) => {
                   const newSharedBy = [...sharedBy];
                   newSharedBy[index].amount = e.target.value
                     ? +e.target.value
                     : 0;
+                  if (+e.target.value >= 0) {
+                    newSharedBy[index].isDefault = false;
+                  } else {
+                    newSharedBy[index].isDefault = true;
+                  }
                   setSharedBy(newSharedBy);
                 }}
               />
             </div>
+            {sharedBy.length > 1 && (
+              <button
+                onClick={() => {
+                  const _sharedBy = [...sharedBy];
+                  setSharedBy(sharedBy.filter((_, i) => i !== index));
+                }}
+                className="btn bg-red-600 "
+              >
+                <FaRegTrashAlt />
+              </button>
+            )}
           </div>
         ))}
-        <button onClick={addSharedBy} className=" text-cyan-900">
-          +增加分母
-        </button>
+        {sharedBy.length < users.length && (
+          <button onClick={addSharedBy} className=" text-cyan-900">
+            +增加分母
+          </button>
+        )}
       </div>
       <div>
         <label htmlFor="" />
