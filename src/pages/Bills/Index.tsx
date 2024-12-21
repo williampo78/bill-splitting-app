@@ -16,7 +16,7 @@ function Bills() {
 
   useEffect(() => {
     getBills();
-  });
+  },[]);
 
   const getBills = async () => {
     const { data } = await getBillsAPi({ groupId: groupInfo._id });

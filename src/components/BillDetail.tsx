@@ -57,7 +57,7 @@ function BillDetail() {
 
   useEffect(() => {
     calculateSharedAmount();
-  }, [sharedByLength]);
+  }, [sharedByLength, price]);
 
   const submitData = useMemo(() => {
     return {
@@ -83,7 +83,6 @@ function BillDetail() {
       ...sharedBy,
       { user: { _id: "", name: "" }, amount: 0, isDefault: true },
     ]);
-    // calculateSharedAmount();
   };
 
   const save = async () => {
@@ -189,10 +188,10 @@ function BillDetail() {
             onChange={(e) => {
               setPrice(e.target.value);
               const _sharedBy = [...sharedBy];
-              if (_sharedBy.length === 1) {
-                _sharedBy[0].amount = e.target.value;
-                setSharedBy(_sharedBy);
-              }
+              _sharedBy.forEach((s) => {
+                s.isDefault = true;
+              });
+              setSharedBy(_sharedBy);
             }}
           />
         </div>
