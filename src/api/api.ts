@@ -5,8 +5,8 @@ export default function (axiosConfig: AxiosRequestConfig): Promise<AxiosResponse
         headers: {
             'Content-Type': 'application/json',
         },
-        // baseURL: import.meta.env.VITE_APP_BASE_URL,
-        baseURL: "http://localhost:3001/api",
+        baseURL: import.meta.env.VITE_APP_BASE_URL,
+        // baseURL: "http://localhost:3001/api",
         timeout: 10000,
     });
 
