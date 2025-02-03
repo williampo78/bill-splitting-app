@@ -10,7 +10,7 @@ function Users() {
 	const [copiedUsers, setCopiedUsers] = useState(users?.length ? users : [{ name: '' }]);
 
 	useEffect(() => {
-		setHeaderTitle('編輯成員' || '');
+		setHeaderTitle('編輯成員');
 	}, []);
 
 	const updateUsers = async () => {

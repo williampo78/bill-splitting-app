@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
-import type {
-  Expense,
-  Transaction,
-  SplitBillsResult,
-} from "@/type/transaction";
+import type { Expense, Transaction } from "@/type/transaction";
 import { useBillStore } from "@/stores/bill";
+import { useStore } from "@/stores/index";
 import { TbArrowBigDownLinesFilled } from "react-icons/tb";
+
+interface Member {
+  userId: string;
+  userName: string;
+  paidAmount: number;
+  sharedAmount: number;
+  difference: number;
+}
 
 function Transaction() {
   const { bills } = useBillStore();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [expenses, setExpense] = useState<Expense[]>([]);
-  const [costDetails, setCostDetsails] = useState<
-    {
-      userId: string;
-      userName: string;
-      paidAmount: number;
-      sharedAmount?: number;
-    }[]
-  >([]);
+  const [costDetails, setCostDetails] = useState<Member[]>([]);
+
+  const { setHeaderTitle } = useStore();
 
   useEffect(() => {
+    setHeaderTitle("結算");
     const _expenses = bills.map((bill) => {
       return {
         title: bill.item,
@@ -34,6 +35,7 @@ function Transaction() {
       };
     });
     setExpense(_expenses);
+
     calculateEachCost();
   }, [bills]);
 
@@ -42,35 +44,47 @@ function Transaction() {
   }, [expenses]);
 
   const calculateEachCost = () => {
-    console.log("bills", bills);
-    const result: {
-      userId: string;
-      userName: string;
-      paidAmount: number;
-      sharedAmount?: number;
-    }[] = [];
-    bills.forEach((bill) => {
-      const currentPerson = result.find((r) => r.userId === bill.paidBy.id);
-      console.log("currentPerson", currentPerson);
+    const membersMap = new Map<string, Member>();
 
-      if (currentPerson) {
-        currentPerson.paidAmount += bill.price;
-      } else {
-        result.push({
-          userId: bill.paidBy.id,
-          userName: bill.paidBy.name,
-          paidAmount: bill.price,
+    bills.forEach(({ price, paidBy, sharedBy }) => {
+      // Update paid amount
+      if (!membersMap.has(paidBy.id)) {
+        membersMap.set(paidBy.id, {
+          userId: String(paidBy.id),
+          userName: paidBy.name,
+          paidAmount: 0,
+          sharedAmount: 0,
+          difference: 0,
         });
       }
+      membersMap.get(paidBy.id)!.paidAmount += price;
+
+      // Update shared amount
+      sharedBy.forEach(({ userId, name, amount }) => {
+        if (!membersMap.has(userId)) {
+          membersMap.set(userId, {
+            userId: String(userId),
+            userName: name,
+            paidAmount: 0,
+            sharedAmount: 0,
+            difference: 0,
+          });
+        }
+        membersMap.get(userId)!.sharedAmount += amount;
+
+        // Ensure userName is stored properly
+        membersMap.get(userId)!.userName = name;
+      });
+
+      membersMap.forEach((member) => {
+        member.difference = member.paidAmount - member.sharedAmount;
+      });
     });
-    console.log("result", result);
-    setCostDetsails(result);
+    setCostDetails(Array.from(membersMap.values()));
   };
 
   //計算分帳結果
   const splitBills = (): void => {
-    console.log(expenses);
-
     const totalExpenses: Record<string, number> = {};
     const people = new Set<string>();
     const totalContributions: Record<string, number> = {}; // Track total contributions for each contributor
@@ -123,7 +137,9 @@ function Transaction() {
       );
       if (payers.length === 0 || receivers.length === 0) break;
 
-      const payer = payers.reduce((a, b) => (balances[a] < balances[b] ? a : b));
+      const payer = payers.reduce((a, b) =>
+        balances[a] < balances[b] ? a : b
+      );
       const receiver = receivers.reduce((a, b) =>
         balances[a] > balances[b] ? a : b
       );
@@ -143,18 +159,38 @@ function Transaction() {
 
   return (
     <>
-      {/* <ul className="mb-12 border-2 border-gray-400 bg-white rounded-md overflow-hidden">
-        {costs.map((cost, index) => (
-          <li key={index} className="px-3 py-2 text-xl">
-            <p>
-              {cost.userName}代墊
-              <span className="text-lg text-blue-600">
-                NT. {cost.cost.toFixed(2)}
-              </span>
-            </p>
+      <ul className="mb-12 border-2 border-gray-400 bg-white rounded-md overflow-hidden">
+        {costDetails.map((cost, index) => (
+          <li
+            key={index}
+            className="px-3 py-2 text-xl border-b border-gray-200 last:border-none"
+          >
+            <div className="flex gap-2 items-center flex-wrap">
+              {cost.userName}
+              <span className="text-sm ">先付了</span>
+              <span className=" text-lg">{cost.paidAmount} 元</span>
+              <span className="text-sm ">實際花費</span>
+              <span className=" text-lg ">{cost.sharedAmount} 元</span>
+
+              {cost.difference > 0 ? (
+                <div>
+                  <span className="text-sm  text-green-600 mr-2">拿回</span>
+                  <span className=" text-lg text-green-600">
+                    {cost.difference} 元
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-sm  text-red-600 mr-2">再付</span>
+                  <span className=" text-lg text-red-600">
+                    {cost.difference * -1} 元
+                  </span>
+                </div>
+              )}
+            </div>
           </li>
         ))}
-      </ul> */}
+      </ul>
       <ul className="flex flex-col gap-3">
         {transactions.map((transaction, index) => (
           <li
@@ -167,7 +203,7 @@ function Transaction() {
             <div className="flex items-center gap-2">
               <TbArrowBigDownLinesFilled className="text-sage-300 text-2xl my-2" />
               <span className="text-lg text-red-600">
-                NT. {transaction.amount}
+                {transaction.amount} 元
               </span>
             </div>
             <p>{transaction.receiver}</p>
