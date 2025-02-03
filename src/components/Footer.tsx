@@ -14,7 +14,7 @@ function Footer() {
 
 	return (
 		<>
-			<footer className="px-4 py-1 flex justify-between items-center text-sm text-sage-500 fixed bottom-0 w-full bg-white">
+			<footer className="px-4 py-1 flex justify-between items-center text-sm text-sage-500 fixed bottom-0 w-full bg-white z-10">
 				<>
 					<button
 						onClick={() => {
